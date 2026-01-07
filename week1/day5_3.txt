@@ -1,0 +1,15 @@
+To: Portfolio Management Team
+From: Quantitative Engineering Desk
+Subject: Week 1 Simulator Design & Market Microstructure
+1. Introduction: This memo documents the architecture of the High-Fidelity Market Simulator built during Week 1. The objective was to move beyond simplified "close-price" backtesting and model the actual mechanics of a Continuous Double Auction (CDA), the standard mechanism for modern equities and crypto exchanges.
+2. Market Mechanics: The core of the simulator is the Limit Order Book (LOB).
+    Price Formation: Unlike candle-based simulators, price here is an emergent property. It is defined strictly by the last executed trade.
+    Matching Logic: We implemented Price-Time Priority (FIFO).
+    Price: A buyer willing to pay more is prioritized.
+    Time: If two agents offer the same price, the one who arrived earlier in the timestamp queue is filled first. This effectively models latency risk, a critical factor for HFT strategies.
+    Liquidity: The system models "Depth." A large market order will not be filled at a single price; it will "walk the book," consuming liquidity at progressively worse prices (slippage).
+3. Design Choices: 
+    Discrete Event Simulation (DES): We chose a discrete clock (tick) over wall-clock time (time.time()). This ensures Determinism—we can replay a specific market scenario (e.g., the 2010 Flash Crash) exactly the same way twice, which is essential for debugging and training Reinforcement Learning agents.
+    Max-Heap for Bids: To optimize the retrieval of the "Best Bid" (highest price), we store bid prices as negative values in a Python heapq (Min-Heap). This allows $O(1)$ access to the best price and $O(\log N)$ for insertions, enabling the system to handle thousands of orders per second.
+    Gymnasium API: The Environment is decoupled from the Agents. This modularity allows us to seamlessly swap out a "Noise Trader" for a "Deep Q-Network (DQN)" agent also without rewriting the market logic.
+4. Conclusion: The resulting simulator provides a "White Box" environment. By controlling the matching logic, we can now simulate complex scenarios—such as liquidity crises or widening spreads—that traditional backtesters often fail to capture. 
