@@ -3,21 +3,19 @@ import heapq
 class Order:
     def __init__(self, order_id, side, price, qty, timestamp):
         self.id = order_id
-        self.side = side      # 'Buy' or 'Sell'
+        self.side = side     
         self.price = price
         self.qty = qty
-        self.timestamp = timestamp  # Discrete tick (1, 2, 3...)
+        self.timestamp = timestamp  
 
     def __repr__(self):
         return f"[{self.timestamp}] {self.side} {self.qty} @ {self.price}"
 
 class MatchingEngine:
     def __init__(self):
-        # Asks: Store as (price, timestamp, order_obj) -> Lowest price first
-        # Bids: Store as (-price, timestamp, order_obj) -> Highest price first (via negative)
         self.bids = []
         self.asks = []
-        self.trades = []  # Log of executed trades
+        self.trades = []  
 
     def process_order(self, order):
         if order.side == 'Buy':
@@ -26,7 +24,6 @@ class MatchingEngine:
             self._match_sell(order)
 
     def _match_buy(self, order):
-        # While there are Asks and the Buy Price >= Best Ask Price
         while self.asks and order.qty > 0 and order.price >= self.asks[0][0]:
             best_ask_tuple = self.asks[0]
             best_ask_price, _, best_ask_order = best_ask_tuple

@@ -109,45 +109,12 @@ class MarketRecorder:
             'mid_price': (ba + bb)/2 if (not np.isnan(ba) and not np.isnan(bb)) else np.nan
         })
 
-# class SimulationKernel:
-#     def __init__(self):
-#         self.engine = MatchingEngine()
-#         self.recorder = MarketRecorder()
-#         self.clock = 0.0
-#         self.events = [] 
-#         self.order_count = 0
-
-#     def schedule(self, delay, func):
-#         heapq.heappush(self.events, (self.clock + delay, self.order_count, func))
-#         self.order_count += 1
-
-#     def run(self, max_orders=1000):
-#         print(f"--- STARTING SIMULATION ({max_orders} Orders) ---")
-        
-#         self.engine.process(Order('Buy', 99.0, 100, 'MM', 0))
-#         self.engine.process(Order('Sell', 101.0, 100, 'MM', 0))
-        
-#         while self.events and self.order_count < max_orders:
-#             t, _, func = heapq.heappop(self.events)
-#             self.clock = t
-#             func()
-            
-#             if self.engine.trades:
-#                 last_trade = self.engine.trades[-1]
-#                 if last_trade.timestamp == self.clock:
-#                     self.recorder.record_trade(last_trade)
-            
-#             self.recorder.record_snapshot(self.clock, self.engine)
-
-#         print("--- SIMULATION COMPLETE ---")
-
-# --- 3. SIMULATION KERNEL (FIXED) ---
 class SimulationKernel:
     def __init__(self):
         self.engine = MatchingEngine()
         self.recorder = MarketRecorder()
         self.clock = 0.0
-        self.events = [] # Heap
+        self.events = [] 
         self.order_count = 0
 
     def schedule(self, delay, func):
@@ -157,35 +124,21 @@ class SimulationKernel:
     def run(self, max_orders=1000):
         print(f"--- STARTING SIMULATION ({max_orders} Orders) ---")
         
-        # Initial Seed Liquidity
         self.engine.process(Order('Buy', 99.0, 100, 'MM', 0))
         self.engine.process(Order('Sell', 101.0, 100, 'MM', 0))
         
-        # BUG FIX: Removed 'self.order_count < max_orders' check. 
-        # The scenario generator already ensures we only have 1000 events.
         while self.events:
             t, _, func = heapq.heappop(self.events)
             self.clock = t
             func()
             
-            # Record Data
-            # BUG FIX 2: Capture ALL trades, not just the last one of the batch
-            # We iterate backwards through trades and verify timestamps
             if self.engine.trades:
-                # In a real system, we'd use an event listener. 
-                # Here, we just grab trades that match the current clock.
                 for trade in reversed(self.engine.trades):
                     if trade.timestamp == self.clock:
-                        # Check if we already recorded this to avoid dupes (naive check)
-                        # A better way is to track the last_trade_index recorded
                         pass 
                     else:
-                        break # Stop once timestamps don't match
-                
-                # Simplified robust approach:
-                # Just grab the last trade if it matches. 
-                # (For this exercise, missing simultaneous multi-fills is acceptable, 
-                # but fixing the loop start is critical).
+                        break 
+
                 last_trade = self.engine.trades[-1]
                 if last_trade.timestamp == self.clock:
                     self.recorder.record_trade(last_trade)

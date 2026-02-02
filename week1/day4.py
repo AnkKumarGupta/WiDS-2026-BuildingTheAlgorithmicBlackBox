@@ -7,7 +7,7 @@ import numpy as np
 class Order:
     def __init__(self, agent_id, side, price, qty, timestamp):
         self.agent_id = agent_id
-        self.side = side # 'Buy' or 'Sell'
+        self.side = side 
         self.price = price
         self.qty = qty
         self.timestamp = timestamp
@@ -27,14 +27,11 @@ class Trade:
 class OrderBook:
     def __init__(self, tick_size=0.01):
         self.tick_size = tick_size
-        # Bids: Max-Heap (stored as -price)
         self.bids = [] 
-        # Asks: Min-Heap (stored as price)
         self.asks = []
-        self.trades = [] # History log
+        self.trades = [] 
 
     def add_order(self, order):
-        # Round price to tick size (Calibration Knob)
         order.price = round(order.price / self.tick_size) * self.tick_size
         
         if order.side == 'Buy':
@@ -43,7 +40,6 @@ class OrderBook:
             self._match_sell(order)
 
     def _match_buy(self, order):
-        # While Asks exist and Buy Price >= Best Ask
         while self.asks and order.qty > 0 and order.price >= self.asks[0][0]:
             best_ask_price, _, ask_order = self.asks[0]
             
@@ -56,12 +52,10 @@ class OrderBook:
             if ask_order.qty == 0:
                 heapq.heappop(self.asks)
         
-        # If not fully filled, rest in book
         if order.qty > 0:
             heapq.heappush(self.bids, (-order.price, order.timestamp, order))
 
     def _match_sell(self, order):
-        # While Bids exist and Sell Price <= Best Bid
         while self.bids and order.qty > 0 and order.price <= -self.bids[0][0]:
             best_bid_price_neg, _, bid_order = self.bids[0]
             best_bid_price = -best_bid_price_neg
@@ -167,7 +161,6 @@ class MarketEnvironment:
 
         print("--- SIMULATION COMPLETE ---")
 
-# --- EXECUTION ---
 
 SIM_TICKS = 500
 TICK_SIZE = 0.05
@@ -181,7 +174,6 @@ for i in range(10):
     trader = NoiseTrader(agent_id=f"Noise_{i}", env=market, arrival_rate=0.3)
     market.add_agent(trader)
 
-# Run
 market.run_simulation()
 
 plt.figure(figsize=(12, 6))

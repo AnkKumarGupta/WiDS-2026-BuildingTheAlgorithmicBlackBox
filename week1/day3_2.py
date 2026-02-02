@@ -31,7 +31,6 @@ class SimulationOrderBook:
         return None
 
 
-# --- PARAMETERS ---
 NUM_TRADERS = 1000
 TRUE_VALUE = 100.00
 NOISE_LEVEL = 2.0 
@@ -46,8 +45,6 @@ for i in range(NUM_TRADERS):
     valuation = random.gauss(TRUE_VALUE, NOISE_LEVEL)
     valuation = random.gauss(TRUE_VALUE, NOISE_LEVEL)
     
-    # Buyers bid slightly below their valuation (seeking profit)
-    # Sellers ask slightly above their valuation
     if side == 'Buy':
         price = round(valuation - random.uniform(0, 0.5), 2)
         sim_book.add_limit_order('Buy', price, 10)
@@ -62,7 +59,6 @@ for i in range(NUM_TRADERS):
     if spread:
         spreads.append(spread)
 
-# --- VISUALIZATION: SPREAD CONVERGENCE ---
 plt.figure(figsize=(12, 5))
 plt.plot(spreads, color='blue', linewidth=0.8)
 plt.title(f"Spread Convergence over {NUM_TRADERS} Orders")

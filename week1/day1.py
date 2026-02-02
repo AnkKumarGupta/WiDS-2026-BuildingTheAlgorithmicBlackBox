@@ -4,8 +4,8 @@ import time
 class Order:
     def __init__(self, order_id, side, price, quantity, order_type):
         self.order_id = order_id
-        self.side = side # 'Buy' or 'Sell'
-        self.price = price # None for Market Orders
+        self.side = side 
+        self.price = price 
         self.quantity = quantity
         self.timestamp = time.time()
         self.order_type = order_type
@@ -15,20 +15,16 @@ class Order:
 
 class OrderBook:
     def __init__(self):
-        # Bids: sorted by Price DESC, then Time ASC
         self.bids = [] 
-        # Asks: sorted by Price ASC, then Time ASC
         self.asks = []
         self.trade_log = []
 
     def add_limit_order(self, order):
         if order.side == 'Buy':
             self.bids.append(order)
-            # Sorted: Highest price first, then earliest time
             self.bids.sort(key=lambda x: (-x.price, x.timestamp))
         else:
             self.asks.append(order)
-            # Sorted: Lowest price first, then earliest time
             self.asks.sort(key=lambda x: (x.price, x.timestamp))
         print(f"--> LIMIT ORDER PLACED: {order}")
 
@@ -36,11 +32,9 @@ class OrderBook:
         print(f"\n--> MARKET ORDER INBOUND: {order}")
         qty_needed = order.quantity
         
-        # Selecting the opposite book
         best_queue = self.asks if order.side == 'Buy' else self.bids
         
         while qty_needed > 0 and best_queue:
-            # Looking at the best available order
             best_match = best_queue[0]
             
             trade_qty = min(qty_needed, best_match.quantity)
@@ -65,7 +59,6 @@ class OrderBook:
         print("      CURRENT ORDER BOOK STATE")
         print("="*40)
         
-        # Displaying top 5 Asks (reversed so highest price is at top)
         print("ASKS (Sellers)")
         for order in reversed(self.asks[:5]): 
             print(f"   ${order.price:.2f}  |  Qty: {order.quantity}")
@@ -83,10 +76,8 @@ class OrderBook:
             return self.asks[0].price - self.bids[0].price
         return 0.0
 
-# --- SIMULATION START ---
 lob = OrderBook()
 
-# 1. PHASE 1: POPULATING THE BOOK (15 Limit Orders)
 print("--- PHASE 1: INJECTING 15 LIMIT ORDERS ---")
 limit_orders = [
     # Bids
@@ -112,10 +103,8 @@ limit_orders = [
 for o in limit_orders:
     lob.add_limit_order(o)
 
-# Showing the book before trading
 lob.display_book()
 
-# 2. PHASE 2: EXECUTE TRADES (10 Market Orders)
 print("--- PHASE 2: EXECUTING 10 MARKET ORDERS ---")
 market_orders = [
     Order(101, 'Buy', None, 50, 'Market'),   # Should hit Best Ask ($150.05)
@@ -134,7 +123,6 @@ for mo in market_orders:
     lob.execute_market_order(mo)
     time.sleep(0.01) 
 
-# 3. FINAL STATE
 lob.display_book()
 
 print("--- TRADE LOG ---")

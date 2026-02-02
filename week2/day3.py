@@ -52,12 +52,6 @@ class SimpleEngine:
     def process(self, order_name):
         print(f"    -> ENGINE: Processed {order_name}")
 
-# --- LATENCY ARBITRAGE ---
-# Scenario:
-# Trader A is a Slow Institution. They decide to buy at t=0.
-# Trader B is a Fast HFT. They detect A's intent and decide to buy at t=0.1.
-# But, A has 200ms latency, B has 5ms latency.
-# Trying to find, Who gets filled first?
 
 kernel = SimulationKernel()
 engine = SimpleEngine()
