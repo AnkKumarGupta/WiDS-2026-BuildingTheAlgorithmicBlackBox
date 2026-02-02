@@ -2,3 +2,6 @@ __pycache__/
 **/__pycache__/
 
 env_wids/
+
+# lob_data.csv file size is large, ignoring it
+week3/outputs/lob_data.csv
