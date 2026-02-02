@@ -43,7 +43,7 @@ By mixing Noise Traders, MMs, and Momentum agents, I observed emergent market pr
 
 With a living market, I trained a **Proximal Policy Optimization (PPO)** agent to trade against these bots.
 
-### Experiment 1: The "God Mode" Stress Test
+### Experiment 1: Stress Test
 Before training, I tested the market's fragility by forcing a Flash Crash at Step 150.
 * **Metric:** The Herding Correlation (red line) spiked to `1.0`. This confirmed my environment supports **Endogenous Risk** (risk arising from agent interaction).
 
