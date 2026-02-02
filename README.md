@@ -12,7 +12,7 @@ I built an interactive dashboard to visualize the agent's decision-making proces
 
 ---
 
-## 🛠 Phase I: The Mechanism (Building the Engine)
+## Phase I: The Mechanism (Building the Engine)
 *Week 0-1*
 
 The first challenge was building a Matching Engine that respects **Price-Time Priority**. Existing libraries were too high-level, so I implemented the core data structures manually:
