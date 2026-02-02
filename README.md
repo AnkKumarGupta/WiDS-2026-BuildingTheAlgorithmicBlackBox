@@ -1,4 +1,4 @@
-# AI in High-Frequency Trading: Building an algorithmic black-box
+# AI in High-Frequency Trading: Building an Algorithmic Black-Box
 **Winter in Data Science (WiDS) 2025 | Final Project**
 
 ## Project Overview
@@ -7,7 +7,7 @@ This project tries to explore and answer: **Can a Deep RL agent discover profita
 Unlike standard backtesters that assume infinite liquidity, I built a "Digital Twin" of a financial exchange from scratch. It features a realistic Limit Order Book (LOB), network latency simulation, and adversarial agents that fight back.
 
 ### The "Black Box" Dashboard
-I built an interactive dashboard to visualize the agent's decision-making process step-by-step.
+I built an interactive dashboard to visualize the agent's decision-making process.
 **[Launch Interactive Dashboard (HTML)](week3/outputs/dashboard_deterministic.html)**
 
 ---
